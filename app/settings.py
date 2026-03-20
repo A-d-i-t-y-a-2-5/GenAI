@@ -13,6 +13,7 @@ class LLMConfig(BaseSettings):
     provider: str = "openai"
     model: str = "gpt-5.1-codex-mini"
     api_key: str = "my-api-key"
+    temperature: Annotated[float, Field(default=0.0, ge=0.0, le=1.0)]
 
 class AppSettings(BaseSettings):
     model_config = SettingsConfigDict(
