@@ -1,6 +1,7 @@
 import time
 
 from fastapi import FastAPI, Request, Response
+from langchain_openrouter import ChatOpenRouter
 from typing import Callable, Awaitable
 
 import uvicorn
