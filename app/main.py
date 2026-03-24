@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request, Response
 from langchain_openrouter import ChatOpenRouter
 from typing import Callable, Awaitable
 
+from pydantic import BaseModel
 import uvicorn
 
 from settings import AppSettings
@@ -13,8 +14,12 @@ config = AppSettings()
 model = ChatOpenRouter(
     model_name=f"{config.llm.provider}/{config.llm.model}",
     api_key=config.llm.api_key,
-    temperature=config.llm.temperature
+    temperature=config.llm.temperature,
+    max_tokens=config.llm.max_tokens,
 )
+
+class ChatRequest(BaseModel):
+    query: str = "What is the capital of France?"
 
 @app.get("/", summary="Check server status", description="Returns a message indicating that the server is up and running.")
 async def root():
@@ -28,14 +33,14 @@ async def log_request(request: Request, call_next: Callable[[Request], Awaitable
     response.headers["X-Response-Time"] = str(response_time)
     return response
 
-@app.get("/chat/sync", summary="Chat with the LLM", description="Sends a message to the LLM and returns the response.")
-def chat(query: str = "What is the capital of France?"):
-    response = model.invoke(query)
+@app.post("/chat/sync", summary="Chat with the LLM", description="Sends a message to the LLM and returns the response.")
+def chat(chat_request: ChatRequest):
+    response = model.invoke(chat_request.query)
     return {"response": response.content}
 
-@app.get("/chat/async", summary="Chat with the LLM", description="Sends a message to the LLM and returns the response.")
-async def chat(query: str = "What is the capital of France?"):
-    response = await model.ainvoke(query)
+@app.post("/chat/async", summary="Chat with the LLM", description="Sends a message to the LLM and returns the response.")
+async def chat(chat_request: ChatRequest):
+    response = await model.ainvoke(chat_request.query)
     return {"response": response.content}
 
 if __name__ == "__main__": 
