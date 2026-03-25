@@ -1,6 +1,7 @@
 import time
 
 from fastapi import FastAPI, Request, Response
+from fastapi.responses import StreamingResponse
 from langchain_openrouter import ChatOpenRouter
 from typing import Callable, Awaitable
 
@@ -20,10 +21,18 @@ model = ChatOpenRouter(
 
 class ChatRequest(BaseModel):
     query: str = "What is the capital of France?"
+    
+async def stream_response(query: str):
+    async for chunk in model.astream(query):
+        yield chunk.content
 
 @app.get("/", summary="Check server status", description="Returns a message indicating that the server is up and running.")
 async def root():
     return {"status": "Server is up and running"}
+
+@app.post("/chat/stream", summary="Chat with streaming response", description="Sends a chat query and receives a streaming response from the model.")
+async def chat_stream(request: ChatRequest) -> StreamingResponse:
+    return StreamingResponse(stream_response(request.query), media_type="text/event-stream")
 
 @app.middleware("http")
 async def log_request(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
