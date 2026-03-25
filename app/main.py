@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 from fastapi import FastAPI, Request, Response
@@ -25,6 +26,7 @@ class ChatRequest(BaseModel):
 async def stream_response(query: str):
     async for chunk in model.astream(query):
         yield chunk.content
+        await asyncio.sleep(0.05)
 
 @app.get("/", summary="Check server status", description="Returns a message indicating that the server is up and running.")
 async def root():
