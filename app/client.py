@@ -48,9 +48,18 @@ if st.button("Submit", type="primary", use_container_width=True):
             scroll_duration=config.extractor.scroll_duration,
         )
 
-    inputs = llm.split_document(doc)
-    response = llm.generate_response(llm.generate_inputs(inputs))
+    with st.spinner("Generating structured data from job postings...", show_time=True):
+        inputs = llm.split_document(doc)
+        response = llm.generate_response(llm.generate_inputs(inputs))
+        
     records = [job.model_dump() for job in response.jobs]
     df = pd.DataFrame(records)
 
     st.dataframe(df, height=(num_rows + 1) * 35 + 3)
+    
+    st.download_button(
+        label="Download CSV",
+        data=df.to_csv(index=False),
+        file_name="job_postings.csv",
+        mime="text/csv"
+    )
