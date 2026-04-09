@@ -1,4 +1,3 @@
-import keyword
 from typing import Annotated, Literal, Optional
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict

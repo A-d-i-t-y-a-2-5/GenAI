@@ -3,8 +3,8 @@ import os
 import pandas as pd
 import streamlit as st
 
-from agents.extractor import get_linkedin_page
-from agents.llm import LanguageModel
+from scraper.extractor import get_linkedin_page
+from scraper.llm import LanguageModel
 from app.settings import AppSettings
 from app.utils import copy_firefox_cookies, load_cookies_from_file
 

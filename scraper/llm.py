@@ -5,7 +5,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
-from agents.schema import JobPostingList
+from scraper.schema import JobPostingList
 
 
 class LanguageModel:
