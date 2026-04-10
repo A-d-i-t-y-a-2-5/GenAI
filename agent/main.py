@@ -35,11 +35,11 @@ async def setup_agent():
 async def main():
     agent, browser = await setup_agent()
     try:
-        print("Asking agent to get headers from langchain.com...")
-        result = await agent.ainvoke(
-            {"messages": [("user", "What are the headers on langchain.com?")]}
-        )
-        print(result["messages"][-1].content)
+        async for chunk in agent.astream(
+            {"messages": [{"role": "user", "content": "Get me all the headers on docs.langchain.com/oss/python/langchain/overview"}]},
+            stream_mode="values",
+        ):
+            chunk["messages"][-1].pretty_print()
     finally:
         await browser.close()
 
