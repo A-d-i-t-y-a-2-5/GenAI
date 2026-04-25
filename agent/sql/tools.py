@@ -7,7 +7,10 @@ from langchain_community.utilities.sql_database import SQLDatabase
 from langchain_core.language_models import BaseLanguageModel
 from langgraph.graph import END, MessagesState
 
-from agent.sql.prompts import generate_query_system_prompt, check_query_system_prompt
+from agent.sql.prompts import (
+    generate_query_system_prompt,
+    check_query_system_prompt,
+)
 
 model: BaseLanguageModel | None = None
 tools: dict[str, BaseTool] | None = None
@@ -29,12 +32,6 @@ def configure_toolkit(
     db = database
 
 
-def list_tables(state: MessagesState):
-    llm_with_tools = model.bind_tools([tools["sql_db_list_tables"]], tool_choice="any")
-    response = llm_with_tools.invoke(state["messages"])
-
-    return {"messages": [response]}
-
 def list_tables_v2(state: MessagesState):
     tool_call = {
         "name": "sql_db_list_tables",
@@ -48,7 +45,7 @@ def list_tables_v2(state: MessagesState):
     tool_message = list_tables_tool.invoke(tool_call)
     response = AIMessage(f"Available tables: {tool_message.content}")
 
-    return {"messages": [tool_call_message, tool_message, response]}
+    return {"messages": response}
 
 
 def call_get_schema(state: MessagesState):
@@ -70,6 +67,21 @@ def generate_query(state: MessagesState):
     # respond naturally when it obtains the solution.
     llm_with_tools = model.bind_tools([tools["sql_db_query"]])
     response = llm_with_tools.invoke([system_message] + state["messages"])
+
+    return {"messages": [response]}
+
+
+def check_query_v2(state: MessagesState):
+    tool_call = state["messages"][-1].tool_calls[0]
+    query_checker_tool = tools["sql_db_query_checker"]
+    tool_message = query_checker_tool.invoke(tool_call)
+
+    return {"messages": [tool_message]}
+
+
+def call_run_query(state: MessagesState):
+    llm_with_tools = model.bind_tools([tools["sql_db_query"]], tool_choice="any")
+    response = llm_with_tools.invoke(state["messages"])
 
     return {"messages": [response]}
 
@@ -96,4 +108,4 @@ def should_continue(state: MessagesState):
     if not last_message.tool_calls:
         return END
     else:
-        return "check_query"
+        return "check_query_v2"
