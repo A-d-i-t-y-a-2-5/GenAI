@@ -35,6 +35,7 @@ builder.add_node(get_schema_node, "get_schema")
 builder.add_node(generate_query)
 builder.add_node(check_query_v2)
 builder.add_node(call_run_query)
+builder.add_node(run_query_v2)
 builder.add_node(run_query_node, "run_query")
 
 builder.add_edge(START, "list_tables_v2")
@@ -45,9 +46,9 @@ builder.add_conditional_edges(
     "generate_query",
     should_continue,
 )
-builder.add_edge("check_query_v2", "call_run_query")
-builder.add_edge("call_run_query", "run_query")
-builder.add_edge("run_query", "generate_query")
+builder.add_edge("check_query_v2", "run_query_v2")
+# builder.add_edge("call_run_query", "run_query")
+builder.add_edge("run_query_v2", "generate_query")
 
 agent = builder.compile()
 

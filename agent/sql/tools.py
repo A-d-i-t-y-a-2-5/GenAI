@@ -85,6 +85,23 @@ def call_run_query(state: MessagesState):
 
     return {"messages": [response]}
 
+def run_query_v2(state: MessagesState):
+    query_tool = tools["sql_db_query"]
+    
+    # Content format: ```sql\n<query>;\n```
+    tool_call = {
+        "name": "sql_db_query",
+        "args": {"query": state["messages"][-1].content[len("```sql\n"): -len("\n```")]},
+        "id": state["messages"][-1].id,
+        "type": "tool_call",
+    }
+    
+    ai_message = AIMessage(content="", tool_calls=[tool_call])
+
+    tool_message = query_tool.invoke(tool_call)
+
+    return {"messages": [ai_message, tool_message]}
+
 
 def check_query(state: MessagesState):
     system_message = {
