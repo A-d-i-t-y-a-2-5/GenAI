@@ -1,3 +1,5 @@
+import sys
+
 from langchain_community.utilities import SQLDatabase
 from langchain_openrouter import ChatOpenRouter
 from langgraph.graph import START, MessagesState, StateGraph
@@ -47,14 +49,14 @@ builder.add_conditional_edges(
     should_continue,
 )
 builder.add_edge("check_query_v2", "run_query_v2")
-# builder.add_edge("call_run_query", "run_query")
 builder.add_edge("run_query_v2", "generate_query")
 
 agent = builder.compile()
 
 agent.get_graph().draw_mermaid_png(output_file_path="graph.png")
 
-question = "Which pokemon are the strongest under total of 600?"
+
+question = sys.argv[1]
 
 for step in agent.stream(
     {"messages": [{"role": "user", "content": question}]},

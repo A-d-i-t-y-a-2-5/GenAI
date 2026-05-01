@@ -60,7 +60,7 @@ def generate_query(state: MessagesState):
         "role": "system",
         "content": generate_query_system_prompt.format(
             dialect=db.dialect,
-            top_k=5,
+            top_k=10,
         ),
     }
     # We do not force a tool call here, to allow the model to
