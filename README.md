@@ -38,25 +38,23 @@ Calculate median move power per type per category (physical, special) along with
 
 ## Answer
 
-| Type | Category | Median Power | Move Count |
-|------|----------|--------------|------------|
-| Bug | Physical | 70.0 | 14 |
-| Bug | Special | 67.5 | 6 |
-| Dark | Physical | 65 | 23 |
-| Dark | Special | 82.5 | 4 |
-| Dragon | Physical | 60 | 9 |
-| Dragon | Special | 100.0 | 12 |
-| Electric | Physical | 87.5 | 12 |
-| Electric | Special | 70.0 | 14 |
-| Fairy | Physical | 82.5 | 2 |
-| Fairy | Special | 85.0 | 10 |
-| Fighting | Physical | 70.0 | 36 |
-| Fighting | Special | 80 | 5 |
-| Fire | Physical | 80 | 11 |
-| Fire | Special | 100 | 23 |
-| Flying | Physical | 70.0 | 14 |
-| Flying | Special | 75 | 7 |
-| Ghost | Physical | 80 | 11 |
-| Ghost | Special | 72.5 | 6 |
-| Grass | Physical | 72.5 | 18 |
-| Grass | Special | 80.0 | 14 |
+| type    | median_power_physical | count_physical | median_power_special | count_special |
+|---------|-----------------------|----------------|----------------------|----------------|
+| Bug     | 70.0                  | 14             | 67.5                 | 6              |
+| Dark    | 65.0                  | 23             | 82.5                 | 4              |
+| Dragon  | 60.0                  | 9              | 100.0                | 12             |
+| Electric| 87.5                  | 12             | 70.0                 | 14             |
+| Fairy   | 82.5                  | 2              | 85.0                 | 10             |
+| Fighting| 70.0                  | 36             | 80.0                 | 5              |
+| Fire    | 80.0                  | 11             | 100.0                | 23             |
+| Flying  | 70.0                  | 14             | 75.0                 | 7              |
+| Ghost   | 80.0                  | 11             | 72.5                 | 6              |
+| Grass   | 72.5                  | 18             | 80.0                 | 14             |
+| Ground  | 77.5                  | 16             | 65.0                 | 5              |
+| Ice     | 65.0                  | 11             | 65.0                 | 10             |
+| Normal  | 50.0                  | 66             | 60.0                 | 21             |
+| Poison  | 60.0                  | 6              | 65.0                 | 10             |
+| Psychic | 75.0                  | 4              | 90.0                 | 21             |
+| Rock    | 60.0                  | 11             | 80.0                 | 3              |
+| Steel   | 70.0                  | 18             | 110.0                | 4              |
+| Water   | 80.0                  | 12             | 80.0                 | 19             |
