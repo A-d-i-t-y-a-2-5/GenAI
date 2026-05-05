@@ -53,9 +53,6 @@ builder.add_edge("run_query_v2", "generate_query")
 
 agent = builder.compile()
 
-agent.get_graph().draw_mermaid_png(output_file_path="graph.png")
-
-
 question = sys.argv[1]
 
 for step in agent.stream(

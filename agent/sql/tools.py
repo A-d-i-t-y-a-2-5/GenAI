@@ -88,10 +88,17 @@ def call_run_query(state: MessagesState):
 def run_query_v2(state: MessagesState):
     query_tool = tools["sql_db_query"]
     
+    content = state["messages"][-1].content
+    if content.startswith("```sql\n") and content.endswith("\n```"):
+        query = content[len("```sql\n") : -len("\n```")]
+    else:
+        query = content
+    query = query.strip()
+    
     # Content format: ```sql\n<query>;\n```
     tool_call = {
         "name": "sql_db_query",
-        "args": {"query": state["messages"][-1].content[len("```sql\n"): -len("\n```")]},
+        "args": {"query": query},
         "id": state["messages"][-1].id,
         "type": "tool_call",
     }

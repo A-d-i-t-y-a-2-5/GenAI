@@ -32,4 +32,31 @@ Here are the distinct move distributions between special and physical as ratios 
 | STEEL     | 18             | 4              | 4.50                   | 88.57      | 68.67              | 1.29                                |
 | WATER     | 12             | 19             | 0.63                   | 71.20      | 71.21              | 1.00                                |
 
-This table summarizes the move distribution and average stats for each type.
+## Question
+
+Calculate median move power per type per category (physical, special) along with their counts. Columns should be type, median power per categories and count per categories
+
+## Answer
+
+| Type | Category | Median Power | Move Count |
+|------|----------|--------------|------------|
+| Bug | Physical | 70.0 | 14 |
+| Bug | Special | 67.5 | 6 |
+| Dark | Physical | 65 | 23 |
+| Dark | Special | 82.5 | 4 |
+| Dragon | Physical | 60 | 9 |
+| Dragon | Special | 100.0 | 12 |
+| Electric | Physical | 87.5 | 12 |
+| Electric | Special | 70.0 | 14 |
+| Fairy | Physical | 82.5 | 2 |
+| Fairy | Special | 85.0 | 10 |
+| Fighting | Physical | 70.0 | 36 |
+| Fighting | Special | 80 | 5 |
+| Fire | Physical | 80 | 11 |
+| Fire | Special | 100 | 23 |
+| Flying | Physical | 70.0 | 14 |
+| Flying | Special | 75 | 7 |
+| Ghost | Physical | 80 | 11 |
+| Ghost | Special | 72.5 | 6 |
+| Grass | Physical | 72.5 | 18 |
+| Grass | Special | 80.0 | 14 |
