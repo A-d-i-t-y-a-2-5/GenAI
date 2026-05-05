@@ -60,7 +60,7 @@ def generate_query(state: MessagesState):
         "role": "system",
         "content": generate_query_system_prompt.format(
             dialect=db.dialect,
-            top_k=10,
+            top_k=20,
         ),
     }
     # We do not force a tool call here, to allow the model to
@@ -72,11 +72,11 @@ def generate_query(state: MessagesState):
 
 
 def check_query_v2(state: MessagesState):
-    tool_call = state["messages"][-1].tool_calls[0]
+    tool_calls = state["messages"][-1].tool_calls
     query_checker_tool = tools["sql_db_query_checker"]
-    tool_message = query_checker_tool.invoke(tool_call)
+    tool_messages = [query_checker_tool.invoke(tool_call) for tool_call in tool_calls]
 
-    return {"messages": [tool_message]}
+    return {"messages": tool_messages}
 
 
 def call_run_query(state: MessagesState):
