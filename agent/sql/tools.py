@@ -1,3 +1,4 @@
+from io import StringIO
 from typing import Literal
 
 from langchain.messages import AIMessage
@@ -5,7 +6,11 @@ from langchain.tools import BaseTool
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities.sql_database import SQLDatabase
 from langchain_core.language_models import BaseLanguageModel
+from langchain_core.tools import tool
 from langgraph.graph import END, MessagesState
+import matplotlib.pyplot as plt
+import pandas as pd
+from pydantic import BaseModel, Field
 
 from agent.sql.prompts import (
     generate_query_system_prompt,
@@ -16,10 +21,33 @@ model: BaseLanguageModel | None = None
 tools: dict[str, BaseTool] | None = None
 db: SQLDatabase | None = None
 
+class PlotResultInput(BaseModel):
+    """Recommendation of appropriate data visualizations based on the user's question, SQL query, and query results"""
+    data_table: str = Field(description="The data table (results of an SQL query) for which to recommend visualizations, formatted as a CSV string.")
+    plot_type: Literal["bar", "line", "pie", "scatter"] | None = Field(default=None, description="The type of graph to plot")
+    x: str = Field(description="Column to use from data for x axis")
+    y: list[str] = Field(description="Column(s) to use from data for y axis")
+
+@tool(args_schema=PlotResultInput)
+def plot(data_table: str, plot_type: str, x: str, y: list[str]) -> str:
+    """Generate a plot from a pandas DataFrame and save it as an image."""
+    try:
+        df = pd.read_csv(StringIO(data_table))
+        if plot_type == "line":
+            df.plot(x=x, y=y, kind="line")
+        elif plot_type == "bar":
+            df.plot(x=x, y=y, kind="bar")
+        plt.savefig("plot.png")
+        return "Plot saved as plot.png"
+    except Exception as e:
+        return f"Error generating plot: {str(e)}"
+
+
 
 def get_tools(db: SQLDatabase, llm: BaseLanguageModel):
     toolkit = SQLDatabaseToolkit(db=db, llm=llm)
     tools = toolkit.get_tools()
+    tools.append(plot)
     return {tool.name: tool for tool in tools}
 
 
@@ -70,6 +98,10 @@ def generate_query(state: MessagesState):
 
     return {"messages": [response]}
 
+def suggest_visualization(state: MessagesState):
+    llm_with_tools = model.bind_tools([tools["plot"]], tool_choice="any")
+    response = llm_with_tools.invoke([state["messages"][-1]])
+    return {"messages": [response]}
 
 def check_query_v2(state: MessagesState):
     tool_calls = state["messages"][-1].tool_calls
@@ -130,6 +162,6 @@ def should_continue(state: MessagesState):
     messages = state["messages"]
     last_message = messages[-1]
     if not last_message.tool_calls:
-        return END
+        return "suggest_visualization"
     else:
         return "check_query_v2"

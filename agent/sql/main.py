@@ -28,6 +28,9 @@ get_schema_node = ToolNode([get_schema_tool], name="get_schema")
 run_query_tool = tools["sql_db_query"]
 run_query_node = ToolNode([run_query_tool], name="run_query")
 
+plot_tool = tools["plot"]
+plot_node = ToolNode([plot_tool], name="plot_query")
+
 configure_toolkit(model, tools, db)
 
 builder = StateGraph(MessagesState)
@@ -39,6 +42,8 @@ builder.add_node(check_query_v2)
 builder.add_node(call_run_query)
 builder.add_node(run_query_v2)
 builder.add_node(run_query_node, "run_query")
+builder.add_node(suggest_visualization)
+builder.add_node(plot_node, "plot_query")
 
 builder.add_edge(START, "list_tables_v2")
 builder.add_edge("list_tables_v2", "call_get_schema")
@@ -50,6 +55,8 @@ builder.add_conditional_edges(
 )
 builder.add_edge("check_query_v2", "run_query_v2")
 builder.add_edge("run_query_v2", "generate_query")
+builder.add_edge("suggest_visualization", "plot_query")
+builder.add_edge("plot_query", END)
 
 agent = builder.compile()
 
